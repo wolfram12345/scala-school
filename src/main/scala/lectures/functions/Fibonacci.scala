@@ -13,15 +13,8 @@ object Fibonacci extends App {
 
   // Task 2
   def fibs(num: Int): Int = {
-    if (num == 1) return 1
-    if (num == 2) return 1
-
-    /*
-    или
     if(num == 1 || num == 2) 1
     else
-     */
-
     fibs(num - 1) + fibs(num - 2)
   }
 
@@ -46,7 +39,7 @@ object Fibonacci2 extends App {
     else fibsImpl(num, Array(1, 1, 2))(num - 1)
 
   private def fibsImpl(num: Int, acc: Array[Int]): Array[Int] = {
-    if(num == 0)
+    if(num - 3 == 0)
       acc
     else
       fibsImpl(num - 1, acc :+ (acc(acc.length - 1) + acc(acc.length - 2)))
