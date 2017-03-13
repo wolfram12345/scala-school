@@ -53,19 +53,10 @@ class SQLAPI(resource :String) {
 
   def execute(sql: String): String = {
 
-//ещё не готово
-
-    openConnection _ compose connection compose logParameter
-
-    //(((connection compose logParameter) andThen openConnection) compose logParameter)(resource)(sql)
-
-
-    //logParameter(resource)
-    //(connection andThen openConnection)(resource)(sql) - работает
+    ((openConnection _ compose connection compose logParameter)(resource) compose logParameter andThen logParameter)(sql)
 
 
     //logParameter(openConnection(connection(logParameter(resource)))(logParameter(sql)))
-
 
 /*
     logParameter(resource)
@@ -75,7 +66,6 @@ class SQLAPI(resource :String) {
     val opConSQL = opCon(sql)
     logParameter(opConSQL)
 */
-    null    // не знаю, что нужно вернуть
   }
 
 
