@@ -41,12 +41,17 @@ object Computation extends App with Data {
   */
 object CurriedComputation extends App with Data {
 
-  def curriedComputation(filterData: String)(dataProducer: Array[String]): Array[String] = ???
+  def curriedComputation(filterData: String)(dataProducer: Array[String]): Array[String] = {
+    Thread.sleep(10)
+    val arrayFilterData = filterData.split(" ")
+    Thread.sleep(100)
+    dataProducer.filter(item => arrayFilterData.contains(item))
+  }
 
-  val partiallyAppliedCurriedFunction = ???
+  val partiallyAppliedCurriedFunction = curriedComputation(filterData)(_) //Тип - "каррированый" метод CurredComputation
 
-  //val result = partiallyAppliedCurriedFunction(dataArray)
-  //result.foreach(println)
+  val result = partiallyAppliedCurriedFunction(dataArray)
+  result.foreach(println)
 }
 
 /**
@@ -56,10 +61,18 @@ object CurriedComputation extends App with Data {
   */
 object FunctionalComputation extends App with Data {
 
-  def functionalComputation(filterData: String): (Array[String]) => Array[String] = ???
+  def functionalComputation(filterData: String): (Array[String]) => Array[String] = {
 
-  val filterApplied = functionalComputation(???)
+    Thread.sleep(10)
+    val arrayFilterData = filterData.split(" ")
 
-  val result = filterApplied(???)
+    (dataArray: Array[String]) => Thread.sleep(100); dataArray.filter(item => arrayFilterData.contains(item))
+  }
+
+  val filterApplied = functionalComputation(filterData)
+
+  val result = filterApplied(dataArray)
   result.foreach(println)
+
+
 }
