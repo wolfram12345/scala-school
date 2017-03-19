@@ -72,8 +72,8 @@ object SortingStuff extends App {
    // Замените знаки вопроса подходящим кодом
    // Поправьте логику метода
     private def sort(stuff: List[Stuff], stuffBox: StuffBox): StuffBox = stuff match {
-      case item :: Nil => putStuffInRightBox(item, stuffBox)
-      case item :: rest => sort(rest, stuffBox)
+      case item :: Nil => putStuffInRightBox(item, stuffBox);
+      case item :: rest => sort(rest, putStuffInRightBox(item, stuffBox)) 
       case _ => stuffBox
     }
     // Метод должен положить вещь в правильную коробку
