@@ -24,7 +24,7 @@ package lectures.operators
 
 object Competition extends App {
 
-  val locals = Map("Artem" -> 6, "Sergey" -> 5, "Anton" -> 2, "Vladimir" -> 2, "Alexander" -> 4l)
+  val locals = Map[String, Long]("Artem" -> 6, "Sergey" -> 5, "Anton" -> 2, "Vladimir" -> 2, "Alexander" -> 4l)
   val foreigners = Map[String, Int]("John" -> 3, "James" -> 1, "Tom" -> 2, "Dick" -> 5, "Eric" -> 6)
 
   val results = for (l <- locals; f <- foreigners)
@@ -33,7 +33,7 @@ object Competition extends App {
       val foreigenName = f._1
       val nameToResult = localName + " vs " +  foreigenName
 
-      val localResult = l._2.asInstanceOf[Number].longValue
+      val localResult = l._2
       val foreignResult = f._2
       val diff = localResult - foreignResult
 
