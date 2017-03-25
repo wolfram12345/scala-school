@@ -12,20 +12,20 @@ object MergeSortImpl extends App {
     val lengthLeftSeq = data.length / 2
     val lengthRightSeq = data.length - lengthLeftSeq
 
-    val leftSeq = data.take(lengthLeftSeq)
-    val rightSeq = data.takeRight(lengthRightSeq)
+    var leftSeq = data.take(lengthLeftSeq)
+    var rightSeq = data.takeRight(lengthRightSeq)
 
     if(leftSeq.length > 1)
-      mergeSort(leftSeq)
+      leftSeq = mergeSort(leftSeq)
     if(rightSeq.length > 1)
-      mergeSort(rightSeq)
+      rightSeq = mergeSort(rightSeq)
 
     var leftIndex:Int = 0
     var rightIndex:Int = 0
-    for(i <- data.indices) {
+    for(i <- data.indices) yield{
       if(leftIndex < leftSeq.length && rightIndex >= rightSeq.length){
         leftIndex = leftIndex + 1
-        data = leftSeq(leftIndex - 1)
+        leftSeq(leftIndex - 1)
       } else if(leftIndex >= leftSeq.length && rightIndex < rightSeq.length){
         rightIndex = rightIndex + 1
         rightSeq(rightIndex - 1)
@@ -35,15 +35,14 @@ object MergeSortImpl extends App {
 
         if(leftValue < rightValue){
           leftIndex = leftIndex + 1
-          leftSeq(leftIndex - 1)
+          leftValue
         }
         else{
           rightIndex = rightIndex + 1
-          rightSeq(rightIndex - 1)
+          rightValue
         }
       }
     }
-    data
   }
 
   def createArrayToTest(size: Int): Seq[Int] = {
