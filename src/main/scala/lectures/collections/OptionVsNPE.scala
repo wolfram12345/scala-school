@@ -51,8 +51,14 @@ object ConnectionProducer extends FailUtil {
 case class Connection(resource: Resource) {
   private val defaultResult = "something went wrong!"
 
-  //ConnectionProducer.result(this)
-  def result(): String = ???
+  def result(): String = {
+    val res = ConnectionProducer.result(this)
+    if(res == null)
+      defaultResult
+    else
+      res
+  }
+
 }
 
 case class Resource(name: String)
@@ -60,12 +66,18 @@ case class Resource(name: String)
 object OptionVsNPE extends App {
 
   def businessLogic: String = try {
-    // ResourceProducer
-    val result: String = ???
+    val resource = ResourceProducer.produce
+    if(resource == null)
+      throw new ResourceException
+    var connection: Connection = null
+
+    while ((connection = ConnectionProducer.produce(resource)) == null){}
+
+    val result: String = connection.result()
     println(result)
     result
   } catch {
-    case e: ResourceException => ???
+    case e: ResourceException => println("Try again with new resource"); businessLogic
   }
 
   businessLogic
