@@ -55,6 +55,7 @@ object CouriersWithComprehension extends App {
   val courierCount = sc.nextInt()
   val addrs = addresses(addressesCount)
   val cours = couriers(courierCount)
+  sc.close()
 
 
   // какие адреса были обслужены
