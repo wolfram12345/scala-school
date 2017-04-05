@@ -30,45 +30,59 @@ trait BST {
   def add(newValue: Int): BST
 
   def find(value: Int): Option[BST]
+
+  def getDeep(bst : Option[BST], deep: Int): Int
 }
 
 case class BSTImpl(value: Int,
                    left: Option[BSTImpl] = None,
                    right: Option[BSTImpl] = None) extends BST {
 
+  def getDeep(bst : Option[BST], deep: Int): Int = {
+    if(bst.get.left.nonEmpty && bst.get.right.nonEmpty){
+      val leftDeep = getDeep(bst.get.left, deep + 1)
+      val rightDeep = getDeep(bst.get.right, deep + 1)
+      if(leftDeep > rightDeep) leftDeep else rightDeep
+    }
+    else if(bst.get.left.nonEmpty && bst.get.right.isEmpty)
+      getDeep(bst.get.left, deep + 1)
+    else if(bst.get.right.nonEmpty && bst.get.left.isEmpty)
+      getDeep(bst.get.right, deep + 1)
+    else
+      deep
+    }
+
+
+
   def add(newValue: Int): BST = {
-    add(newValue, Some(this)).get
+    addNode(Some(this), newValue).get
   }
 
-  def add(newValue: Int, bst: Option[BSTImpl]): Option[BSTImpl] = {
-    if(bst.get.left.isEmpty && bst.get.right.isEmpty){
-      if(newValue < bst.get.value)
-        Some(BSTImpl(bst.get.value, Some(BSTImpl(newValue)), None))
-      else if(newValue > bst.get.value)
-        Some(BSTImpl(bst.get.value, None, Some(BSTImpl(newValue))))
-      else
-        bst
-    }
-    else if(bst.get.left.isEmpty && bst.get.right.nonEmpty){
-      if(newValue < bst.get.value)
-        Some(BSTImpl(bst.get.value, Some(BSTImpl(newValue)), add(newValue, bst.get.right)))
-      else if(newValue > bst.get.value)
-        Some(BSTImpl(bst.get.value, None, add(newValue, bst.get.right)))
-      else
-        bst
-    }
-    else if(bst.get.right.isEmpty && bst.get.left.nonEmpty){
-      if(newValue < bst.get.value)
-        Some(BSTImpl(bst.get.value, add(newValue, bst.get.left), None))
-      else if(newValue > bst.get.value)
-        Some(BSTImpl(bst.get.value, add(newValue, bst.get.left), Some(BSTImpl(newValue))))
-      else
-        bst
-    }
-    else{
-        Some(BSTImpl(bst.get.value, add(newValue, bst.get.left), add(newValue, bst.get.right)))
-    }
+  def copyNode(bst: Option[BSTImpl]): Option[BSTImpl] = {
+    if(bst.isEmpty)
+      None
+    else
+      Some(BSTImpl(bst.get.value, bst.get.left, bst.get.right))
   }
+
+  def addNode(bst: Option[BSTImpl], newValue: Int): Option[BSTImpl] = {
+    if(newValue < bst.get.value){
+      if(bst.get.left.nonEmpty)
+        Some(BSTImpl(bst.get.value, addNode(bst.get.left, newValue), copyNode(bst.get.right)))
+      else
+        Some(BSTImpl(bst.get.value, Some(BSTImpl(newValue)), copyNode(bst.get.right)))
+    }
+    else if(newValue > bst.get.value){
+      if(bst.get.right.nonEmpty)
+        Some(BSTImpl(bst.get.value, copyNode(bst.get.left), addNode(bst.get.right, newValue)))
+      else
+        Some(BSTImpl(bst.get.value, copyNode(bst.get.left), Some(BSTImpl(newValue))))
+    }
+    else
+      Some(BSTImpl(bst.get.value, copyNode(bst.get.left), copyNode(bst.get.right)))
+  }
+
+
 
 
   def find(value: Int): Option[BST] = {
@@ -96,7 +110,25 @@ case class BSTImpl(value: Int,
   }
 
 
-  // override def toString() = ???
+  def
+
+
+   override def toString() = {
+     val deep = getDeep(Some(this), 0)
+     val numSymbols = if (deep == 0) 1 else deep * 2
+     val stringBuilder = new StringBuilder()
+     for(i <- 0 until numSymbols)
+       stringBuilder.append(" ")
+     val str = stringBuilder.toString()
+
+     val lines = for(i <- 0 to deep) yield{
+       new String(str)
+     }
+
+    val linesArray: Array[String] = lines.toArray
+
+
+   }
 
 }
 
@@ -129,5 +161,8 @@ object TreeTest extends App {
   require(testTree.find(markerItem2).isDefined)//это ведь так?
   require(testTree.find(markerItem3).isDefined)//
 
+
   println(testTree)
+
+
 }
