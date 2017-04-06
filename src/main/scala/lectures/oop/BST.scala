@@ -83,7 +83,9 @@ case class BSTImpl(value: Int,
   }
 
 
-
+  def fold(aggregator: Int)(f: (Int, Int) => Int) = {
+    
+  }
 
   def find(value: Int): Option[BST] = {
     find(value, Some(this))
@@ -110,24 +112,44 @@ case class BSTImpl(value: Int,
   }
 
 
-  def
+  def replaceCharAtString(string: String, index: Int, char: Int): String = {
+    if(index + 1 < string.length){
+      string.substring(0, index) + char + string.substring(index + 1)
+    }
+    else
+      new String(string)
+  }
+
+  def nodeToString(bst: Option[BST], deep: Int, array: Array[String], leftIndex: Int, rightIndex: Int) : Unit = {
+    val indexToReplace = (leftIndex + rightIndex) / 2
+    array(deep) = replaceCharAtString(array(deep), indexToReplace, bst.get.value)
+    if(bst.get.left.nonEmpty)
+      nodeToString(bst.get.left, deep + 1, array, leftIndex, indexToReplace)
+    if(bst.get.right.nonEmpty)
+      nodeToString(bst.get.right, deep + 1, array, indexToReplace + 1, rightIndex)
+  }
 
 
-   override def toString() = {
+
+   override def toString() = { // не очень красиво, но вроде работает
      val deep = getDeep(Some(this), 0)
-     val numSymbols = if (deep == 0) 1 else deep * 2
+     val numNodesOnLastLevel: Int = Math.pow(2, deep).toInt * deep
      val stringBuilder = new StringBuilder()
-     for(i <- 0 until numSymbols)
+     for(i <- 0 until numNodesOnLastLevel)
        stringBuilder.append(" ")
-     val str = stringBuilder.toString()
-
-     val lines = for(i <- 0 to deep) yield{
-       new String(str)
+     val templateString = stringBuilder.toString()
+     val arrayOfStrings: Array[String] = new Array(deep + 1)
+     for(i <- arrayOfStrings.indices){
+       arrayOfStrings(i) = new String(templateString)
      }
+     nodeToString(Some(this), 0, arrayOfStrings, 0, templateString.length)
 
-    val linesArray: Array[String] = lines.toArray
-
-
+     stringBuilder.clear()
+     for(str <- arrayOfStrings){
+       stringBuilder.append(str)
+       stringBuilder.append("\n\r")
+     }
+     stringBuilder.toString()
    }
 
 }
