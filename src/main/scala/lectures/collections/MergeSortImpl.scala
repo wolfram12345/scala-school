@@ -8,51 +8,46 @@ package lectures.collections
   */
 object MergeSortImpl extends App {
 
-  def mergeSort(data: Seq[Int]): Seq[Int] = {
-    val lengthLeftSeq = data.length / 2
-    val lengthRightSeq = data.length - lengthLeftSeq
-
-    var leftSeq = data.take(lengthLeftSeq)
-    var rightSeq = data.takeRight(lengthRightSeq)
-
-    if(leftSeq.length > 1)
-      leftSeq = mergeSort(leftSeq)
-    if(rightSeq.length > 1)
-      rightSeq = mergeSort(rightSeq)
-
-    var leftIndex:Int = 0
-    var rightIndex:Int = 0
-    for(i <- data.indices) yield{
-      if(leftIndex < leftSeq.length && rightIndex >= rightSeq.length){
-        leftIndex = leftIndex + 1
-        leftSeq(leftIndex - 1)
-      } else if(leftIndex >= leftSeq.length && rightIndex < rightSeq.length){
-        rightIndex = rightIndex + 1
-        rightSeq(rightIndex - 1)
-      } else{
-        val leftValue = leftSeq(leftIndex)
-        val rightValue = rightSeq(rightIndex)
-
-        if(leftValue < rightValue){
-          leftIndex = leftIndex + 1
-          leftValue
+  private def merge(data1: Seq[Int], data2: Seq[Int], outputData: Seq[Int]): Seq[Int] = {
+    data1 match {
+      case headData1 :: tailData1 => data2 match {
+        case headData2 :: tailData2 => {
+          if(headData1 < headData2)
+            merge(tailData1, data2, outputData :+ headData1)
+          else
+            merge(data1, tailData2, outputData :+ headData2)
         }
-        else{
-          rightIndex = rightIndex + 1
-          rightValue
-        }
+        case _ => merge(tailData1, Nil, outputData :+ headData1)
+      }
+      case _ => data2 match{
+        case headData2 :: tailData2 => merge(Nil, tailData2, outputData :+ headData2)
+        case _ => outputData
       }
     }
   }
 
-  def createArrayToTest(size: Int): Seq[Int] = {
-    val random = scala.util.Random
-    for(i <- 0 until size) yield {
-      random.nextInt() % 100
-    }
+  def mergeSort(data: Seq[Int]): Seq[Int] = {
+
+    val separateLength = data.length / 2
+    val separatedLists = data.splitAt(separateLength)
+
+    val leftSeq = if(separatedLists._1.length > 1) mergeSort(separatedLists._1) else separatedLists._1
+    val rightSeq = if(separatedLists._2.length > 1) mergeSort(separatedLists._2) else separatedLists._2
+
+    merge(leftSeq, rightSeq, Seq())
   }
 
-  val array = createArrayToTest(10)
+  def createListToTest(size: Int) = {
+    val random = scala.util.Random
+    (for(i <- 0 until size) yield {
+      random.nextInt() % 100
+    }).toList
+  }
+
+  //работает только со списками
+  //"Попробуй написать его без ручного итерирования, с применением иммутабельных списков и pattern matching."
+
+  val array = createListToTest(10)
 
   println(array)
 
