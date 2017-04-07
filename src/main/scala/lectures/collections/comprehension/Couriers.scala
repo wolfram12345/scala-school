@@ -42,9 +42,6 @@ object Address {
 
 case class Address(postIndex: String)
 
-case class accum(courier: Courier, indexCanServe: Int, servedAddresses: List[Address])
-
-
 object CouriersWithComprehension extends App {
 
   import Address._
@@ -72,50 +69,16 @@ object CouriersWithComprehension extends App {
   //  }
 
   def serveAddresses(addresses: List[Address], couriers: List[Courier]) = {
-    val nullAccum = accum(null, 0, List())
-    addresses.foldLeft(nullAccum)((acc, address) =>{
-      val courier = acc.courier
-      val indexCanServe: Int = acc.indexCanServe
-      val addressesList: List[Address] = acc.servedAddresses
-      if(courier == null){
-        val newCourier = getCourier(couriers.iterator)
-        if(newCourier == null){
-          accum(null, 0, addressesList)
-        }
-        else{
-          val newIndexCanServe = 1
-          accum(newCourier, newIndexCanServe, addressesList :+ address)
-        }
-      }
-      else{
-        if(indexCanServe < courier.canServe){
-          accum(courier, indexCanServe + 1, addressesList :+ address)
-        }
-        else{
-          val newCourier = getCourier(couriers.iterator)
-          if(newCourier == null){
-            accum(null, 0, addressesList)
-          }
-          else{
-            val newIndexCanServe = 1
-            accum(newCourier, newIndexCanServe, addressesList :+ address)
-          }
-        }
-      }
+    val countAddresses = couriers.foldLeft(0)((count, courier) => {
+      if(traffic().degree < 5)
+        count + courier.canServe
+      else
+        count
     })
+    addresses.take(countAddresses)
   }
 
-  def getCourier(iterator: Iterator[Courier]): Courier = {
-    if(iterator.hasNext){
-      val courier = iterator.next()
-      if(traffic().degree < 5 && courier.canServe > 0)
-        courier
-      else
-        getCourier(iterator)
-    }
-    else
-      null
-  }
+
 
 
   def traffic(): Traffic = new Traffic(Math.random() * 10)
@@ -126,8 +89,7 @@ object CouriersWithComprehension extends App {
 //    }
 
   def printServedAddresses(addresses: List[Address], couriers: List[Courier]) = {
-    val listServedAddresses = serveAddresses(addresses, couriers).servedAddresses
-    listServedAddresses.map(address => println(address.postIndex))
+    serveAddresses(addresses, couriers).foreach(address => println(address.postIndex))
   }
 
   printServedAddresses(addrs, cours)

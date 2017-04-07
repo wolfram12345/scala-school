@@ -24,15 +24,11 @@ object MyListImpl extends App {
 
     def map(f: (Int => Int)) = flatMap(t => MyList(List(f(t))))
 
-    def getValue(list: List[Int], acc: Int, f:(Tuple2[Int, Int] => Int)): Int = {
-      list match {
-        case head :: tail => getValue(tail, f(acc, head), f)
-        case _ => acc
-      }
-    }
-
     def foldLeft(acc: Int)(f: (Tuple2[Int, Int] => Int)): Int = {
-        getValue(data, acc, f)
+        data match {
+          case head :: tail => MyList(tail).foldLeft(f(acc, head))(f)
+          case _ => acc
+        }
     }
 
     def filter(f: (Int => Boolean)) = flatMap(t =>{
