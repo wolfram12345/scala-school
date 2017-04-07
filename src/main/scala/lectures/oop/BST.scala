@@ -32,6 +32,8 @@ trait BST {
   def find(value: Int): Option[BST]
 
   def getDeep(bst : Option[BST], deep: Int): Int
+
+  def fold(aggregator: Int)(f: (Int, Int) => Int): Int
 }
 
 case class BSTImpl(value: Int,
@@ -82,9 +84,15 @@ case class BSTImpl(value: Int,
       Some(BSTImpl(bst.get.value, copyNode(bst.get.left), copyNode(bst.get.right)))
   }
 
+  def fold(bst: Option[BST], aggregator: Int, f:(Int, Int) => Int): Int = {
+    val thisAggregator = f(aggregator, bst.get.value)
+    val leftAggregator = if(bst.get.left.nonEmpty) fold(bst.get.left, thisAggregator, f) else thisAggregator
+    val rightAggregator = if(bst.get.right.nonEmpty) fold(bst.get.right, leftAggregator, f) else leftAggregator
+    rightAggregator
+  }
 
-  def fold(aggregator: Int)(f: (Int, Int) => Int) = {
-    
+  def fold(aggregator: Int)(f: (Int, Int) => Int): Int = {
+    fold(Some(this), aggregator, f)
   }
 
   def find(value: Int): Option[BST] = {
@@ -142,7 +150,7 @@ case class BSTImpl(value: Int,
      for(i <- arrayOfStrings.indices){
        arrayOfStrings(i) = new String(templateString)
      }
-     nodeToString(Some(this), 0, arrayOfStrings, 0, templateString.length)
+     nodeToString(Some(this), 0, arrayOfStrings, 0, templateString.length - 1)
 
      stringBuilder.clear()
      for(str <- arrayOfStrings){
@@ -184,7 +192,10 @@ object TreeTest extends App {
   require(testTree.find(markerItem3).isDefined)//
 
 
-  println(testTree)
+  //println(testTree)
 
 
+  val myTree = BSTImpl(5).add(3).add(8).add(2).add(4).add(7).add(9).add(10)
+  println(myTree)
+  println(myTree.fold(0)((m, n) => m + n))
 }
