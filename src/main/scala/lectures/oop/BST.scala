@@ -192,7 +192,7 @@ object TreeTest extends App {
   require(testTree.find(markerItem3).isDefined)//
 
 
-  //println(testTree)
+  println(testTree)
 
 
   val myTree = BSTImpl(5).add(3).add(8).add(2).add(4).add(7).add(9).add(10)
