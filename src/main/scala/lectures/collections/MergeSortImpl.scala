@@ -9,27 +9,18 @@ package lectures.collections
 object MergeSortImpl extends App {
 
   private def merge(data1: Seq[Int], data2: Seq[Int], outputData: Seq[Int]): Seq[Int] = {
-    data1 match {
-      case headData1 :: tailData1 => data2 match {
-        case headData2 :: tailData2 => {
-          if(headData1 < headData2)
-            merge(tailData1, data2, outputData :+ headData1)
-          else
-            merge(data1, tailData2, outputData :+ headData2)
-        }
-        case _ => merge(tailData1, Nil, outputData :+ headData1)
-      }
-      case _ => data2 match{
-        case headData2 :: tailData2 => merge(Nil, tailData2, outputData :+ headData2)
-        case _ => outputData
-      }
+    (data1.headOption, data2.headOption) match {
+      case (Some(a), Some(b)) if a < b => merge(data1.tail, data2, outputData :+ a)
+      case (Some(a), Some(b)) if a >= b => merge(data1, data2.tail, outputData :+ b)
+      case (Some(a), None) => outputData ++ data1
+      case (None, Some(b)) => outputData ++ data2
+      case (None, None) => outputData
     }
   }
 
   def mergeSort(data: Seq[Int]): Seq[Int] = {
 
-    val separateLength = data.length / 2
-    val separatedLists = data.splitAt(separateLength)
+    val separatedLists = data.splitAt(data.length / 2)
 
     val leftSeq = if(separatedLists._1.length > 1) mergeSort(separatedLists._1) else separatedLists._1
     val rightSeq = if(separatedLists._2.length > 1) mergeSort(separatedLists._2) else separatedLists._2
