@@ -28,7 +28,7 @@ class MergeSortImplWordSpecTest extends WordSpec with Matchers with GivenWhenThe
     }
     "sorted with an Impl" should {
 
-      "be equal to already sorted seq" in pendingUntilFixed {
+      "be equal to already sorted seq" in {
         seqTest { defaultSeq => {
           val shuffled = scala.util.Random.shuffle(defaultSeq)
           shuffled should not equal defaultSeq
@@ -39,7 +39,7 @@ class MergeSortImplWordSpecTest extends WordSpec with Matchers with GivenWhenThe
         }
       }
 
-      "have the same size as original seq" in pendingUntilFixed {
+      "have the same size as original seq" in {
         seqTest { defaultSeq => {
           val shuffled = scala.util.Random.shuffle(defaultSeq)
           shuffled should not equal defaultSeq
@@ -51,7 +51,7 @@ class MergeSortImplWordSpecTest extends WordSpec with Matchers with GivenWhenThe
         }
       }
 
-      "throw exception" in pendingUntilFixed {
+      "throw exception" in {
         seqTest { defaultSeq => {
           When("index requested exceed it's size")
           val shuffled = scala.util.Random.shuffle(defaultSeq)
