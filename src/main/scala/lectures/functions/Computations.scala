@@ -13,7 +13,7 @@ trait Data {
   val dataArray = "Клара Цеткин обожала Карла Маркса".split(" ")
 }
 
-object Computation extends App with Data {
+object Computation extends Data {
 
   def computation(filterData: String, dataProducer: Array[String]): Array[String] = {
     //EMULATE HEAVY LOAD
@@ -27,8 +27,8 @@ object Computation extends App with Data {
     dataProducer.filter(dataItem => filterArray.contains(dataItem))
   }
 
-  val result = computation(filterData, dataArray)
-  result.foreach(println)
+  //val result = computation(filterData, dataArray)
+  //result.foreach(println)
 }
 
 /**
@@ -39,11 +39,16 @@ object Computation extends App with Data {
   *
   * Какой тип имеет partiallyAppliedCurriedFunction - ?
   */
-object CurriedComputation extends App with Data {
+object CurriedComputation extends Data {
 
-  def curriedComputation(filterData: String)(dataProducer: Array[String]): Array[String] = ???
+  def curriedComputation(filterData: String)(dataProducer: Array[String]): Array[String] = {
+    Thread.sleep(10)
+    val arrayFilterData = filterData.split(" ")
+    Thread.sleep(100)
+    dataProducer.filter(item => arrayFilterData.contains(item))
+  }
 
-  val partiallyAppliedCurriedFunction = ???
+  val partiallyAppliedCurriedFunction = curriedComputation(filterData)(_) //Тип - "каррированый" метод CurredComputation
 
   //val result = partiallyAppliedCurriedFunction(dataArray)
   //result.foreach(println)
@@ -54,12 +59,20 @@ object CurriedComputation extends App with Data {
   *
   * При этом постарайтесь минимизировать количество разбиений строки filterData на отдельные слова.
   */
-object FunctionalComputation extends App with Data {
+object FunctionalComputation extends Data {
 
-  def functionalComputation(filterData: String): (Array[String]) => Array[String] = ???
+  def functionalComputation(filterData: String): (Array[String]) => Array[String] = {
 
-  val filterApplied = functionalComputation(???)
+    Thread.sleep(10)
+    val arrayFilterData = filterData.split(" ")
 
-  val result = filterApplied(???)
-  result.foreach(println)
+    (dataArray: Array[String]) => Thread.sleep(100); dataArray.filter(item => arrayFilterData.contains(item))
+  }
+
+  val filterApplied = functionalComputation(filterData)
+
+  //val result = filterApplied(dataArray)
+  //result.foreach(println)
+
+
 }

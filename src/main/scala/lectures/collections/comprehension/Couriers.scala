@@ -52,9 +52,13 @@ object CouriersWithComprehension extends App {
   val courierCount = sc.nextInt()
   val addrs = addresses(addressesCount)
   val cours = couriers(courierCount)
+  sc.close()
+
 
   // какие адреса были обслужены
+
   def serveAddresses(addresses: List[Address], couriers: List[Courier]) = {
+<<<<<<< HEAD
     var accum = 0
     for (courier <- couriers;
          trafficDegree = traffic().degree;
@@ -64,14 +68,25 @@ object CouriersWithComprehension extends App {
       accum = accum + 1
       addr
     }
+=======
+    val countAddresses = couriers.foldLeft(0)((count, courier) => {
+      if(traffic().degree < 5)
+        count + courier.canServe
+      else
+        count
+    })
+    addresses.take(countAddresses)
+>>>>>>> 5964a61f372a60f1bcac2fd91438bed8342b2bee
   }
+
+
+
 
   def traffic(): Traffic = new Traffic(Math.random() * 10)
 
-  def printServedAddresses(addresses: List[Address], couriers: List[Courier]) =
-    for (a <- serveAddresses(addresses, couriers)) {
-      println(a.postIndex)
-    }
+  def printServedAddresses(addresses: List[Address], couriers: List[Courier]) = {
+    serveAddresses(addresses, couriers).foreach(address => println(address.postIndex))
+  }
 
   printServedAddresses(addrs, cours)
 
