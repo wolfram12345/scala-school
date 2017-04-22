@@ -58,17 +58,6 @@ object CouriersWithComprehension extends App {
   // какие адреса были обслужены
 
   def serveAddresses(addresses: List[Address], couriers: List[Courier]) = {
-<<<<<<< HEAD
-    var accum = 0
-    for (courier <- couriers;
-         trafficDegree = traffic().degree;
-         t <- 0 until courier.canServe if trafficDegree < 5 && accum < addresses.length
-    ) yield {
-      val addr = addresses(accum)
-      accum = accum + 1
-      addr
-    }
-=======
     val countAddresses = couriers.foldLeft(0)((count, courier) => {
       if(traffic().degree < 5)
         count + courier.canServe
@@ -76,7 +65,6 @@ object CouriersWithComprehension extends App {
         count
     })
     addresses.take(countAddresses)
->>>>>>> 5964a61f372a60f1bcac2fd91438bed8342b2bee
   }
 
 
