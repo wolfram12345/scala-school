@@ -33,17 +33,9 @@ object Competition extends App {
       val foreigenName = f._1
       val nameToResult = localName + " vs " +  foreigenName
 
-<<<<<<< HEAD
-  //  var finalResult = 0
-  //  for (r <- results) {
-  //    if (???) finalResult = finalResult + 1
-  //    else ???
-  //  }
-=======
       val localResult = l._2
       val foreignResult = f._2
       val diff = localResult - foreignResult
->>>>>>> 5964a61f372a60f1bcac2fd91438bed8342b2bee
 
       nameToResult -> diff
     }
