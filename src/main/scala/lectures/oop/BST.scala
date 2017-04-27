@@ -31,7 +31,7 @@ trait BST {
 
   def find(value: Int): Option[BST]
 
-  def getDeep(bst : Option[BST], deep: Int): Int
+  def getDeep(bst : BST, deep: Int): Int
 
   def fold(aggregator: Int)(f: (Int, Int) => Int): Int
 }
@@ -40,16 +40,16 @@ case class BSTImpl(value: Int,
                    left: Option[BSTImpl] = None,
                    right: Option[BSTImpl] = None) extends BST {
 
-  def getDeep(bst : Option[BST], deep: Int): Int = {
-    if(bst.get.left.nonEmpty && bst.get.right.nonEmpty){
-      val leftDeep = getDeep(bst.get.left, deep + 1)
-      val rightDeep = getDeep(bst.get.right, deep + 1)
+  def getDeep(bst : BST, deep: Int): Int = {
+    if(bst.left.nonEmpty && bst.right.nonEmpty){
+      val leftDeep = getDeep(bst.left.get, deep + 1)
+      val rightDeep = getDeep(bst.right.get, deep + 1)
       if(leftDeep > rightDeep) leftDeep else rightDeep
     }
-    else if(bst.get.left.nonEmpty && bst.get.right.isEmpty)
-      getDeep(bst.get.left, deep + 1)
-    else if(bst.get.right.nonEmpty && bst.get.left.isEmpty)
-      getDeep(bst.get.right, deep + 1)
+    else if(bst.left.nonEmpty && bst.right.isEmpty)
+      getDeep(bst.left.get, deep + 1)
+    else if(bst.right.nonEmpty && bst.left.isEmpty)
+      getDeep(bst.right.get, deep + 1)
     else
       deep
   }
@@ -128,19 +128,19 @@ case class BSTImpl(value: Int,
       new String(string)
   }
 
-  def nodeToString(bst: Option[BST], deep: Int, array: Array[String], leftIndex: Int, rightIndex: Int) : Unit = {
+  def nodeToString(bst: BST, deep: Int, array: Array[String], leftIndex: Int, rightIndex: Int) : Unit = {
     val indexToReplace = (leftIndex + rightIndex) / 2
-    array(deep) = replaceCharAtString(array(deep), indexToReplace, bst.get.value)
-    if(bst.get.left.nonEmpty)
-      nodeToString(bst.get.left, deep + 1, array, leftIndex, indexToReplace)
-    if(bst.get.right.nonEmpty)
-      nodeToString(bst.get.right, deep + 1, array, indexToReplace + 1, rightIndex)
+    array(deep) = replaceCharAtString(array(deep), indexToReplace, bst.value)
+    if(bst.left.nonEmpty)
+      nodeToString(bst.left.get, deep + 1, array, leftIndex, indexToReplace)
+    if(bst.right.nonEmpty)
+      nodeToString(bst.right.get, deep + 1, array, indexToReplace + 1, rightIndex)
   }
 
 
 
   override def toString() = { // не очень красиво, но вроде работает
-  val deep = getDeep(Some(this), 0)
+    val deep = getDeep(this, 0)
     val numNodesOnLastLevel: Int = Math.pow(2, deep).toInt * deep
     val stringBuilder = new StringBuilder()
     for(i <- 0 until numNodesOnLastLevel)
@@ -150,12 +150,12 @@ case class BSTImpl(value: Int,
     for(i <- arrayOfStrings.indices){
       arrayOfStrings(i) = new String(templateString)
     }
-    nodeToString(Some(this), 0, arrayOfStrings, 0, templateString.length - 1)
+    nodeToString(this, 0, arrayOfStrings, 0, templateString.length - 1)
 
     stringBuilder.clear()
     for(str <- arrayOfStrings){
       stringBuilder.append(str)
-      stringBuilder.append("\n\r")
+      stringBuilder.append(System.lineSeparator())
     }
     stringBuilder.toString()
   }

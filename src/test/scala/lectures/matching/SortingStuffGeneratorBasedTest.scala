@@ -34,10 +34,8 @@ class SortingStuffGeneratorBasedTest extends WordSpec with Matchers with Propert
   val cheepWatchGen: Gen[Watches] = Gen.zip(Gen.choose(0f, 1000f), Gen.alphaStr).map(w => Watches(w._2, w._1))
   val bookGenerator = Gen.alphaStr.map(name => Book(name, Random.nextBoolean()))
   val interestingBookGen = bookGenerator.filter(_.isInteresting)
-  val knifeGenerator = (needKnife: Boolean) => {
-    if(needKnife) Some(Knife)
-    else None
-  }
+  val knifeGenerator = Gen.const(Knife)
+
   val bootsGenerator: Gen[Boots] = Gen.zip(Gen.alphaStr, Gen.choose(10, 60)).map(pair => Boots(pair._1, pair._2))
 
   // Override configuration if you need
@@ -77,21 +75,12 @@ class SortingStuffGeneratorBasedTest extends WordSpec with Matchers with Propert
       }
     }
     "find knife" which {
-      "was occasionally disposed" in{
-        findMyKnife(sortJunk({
-          val mayBeKnife = knifeGenerator(true)
-          if(mayBeKnife.isDefined)
-            List(mayBeKnife.get)
-          else
-            List()
-        })) shouldBe true
-        findMyKnife(sortJunk({
-          val mayBeKnife = knifeGenerator(false)
-          if(mayBeKnife.isDefined)
-            List(mayBeKnife.get)
-          else
-            List()
-        })) shouldBe false
+      "was occasionally disposed" in {
+        val ms = generatorDrivenConfig.maxSize
+        val books = (1 to ms) flatMap { _ => interestingBookGen.sample }
+        val watches = (1 to ms) flatMap { _ => cheepWatchGen.sample }
+        findMyKnife(sortJunk((books ++ watches).toList)) shouldBe false
+        findMyKnife(sortJunk(Random.shuffle(books ++ watches).toList :+ knifeGenerator.sample.get)) shouldBe true
       }
     }
 
