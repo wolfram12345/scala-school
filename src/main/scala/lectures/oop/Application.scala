@@ -31,12 +31,7 @@ trait TestServiceImpl extends UsefulService {
 trait ProductionServiceImpl extends UsefulService {
   self: SQLAPI =>
   private val sql = "do the SQL query and than count 'a' sympols"
-  def doSomeService() = execute(sql).toCharArray.foldLeft(0){(acc, ch) => {
-    if(ch == 'a')
-      acc + 1
-    else
-      acc
-  }} // подсчитайте сколько символов 'a' в полученной строке
+  def doSomeService() = execute(sql).count(ch => {ch == 'a'})// подсчитайте сколько символов 'a' в полученной строке
 }
 
 class Application(isTestEnv: Boolean) {
